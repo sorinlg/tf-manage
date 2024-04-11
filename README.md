@@ -6,10 +6,12 @@ A simple Terraform wrapper for organising your code and workflow.
 ```bash
 yum -y install wget sudo unzip git bash-completion which
 ```
+
 ### MacOS
 ```
-brew install unzip git bash-completion gnu-which coreutils wget
+brew install unzip git bash-completion@2 gnu-which coreutils wget
 ```
+
 ## Installation
 ```bash
 # clone repo and
