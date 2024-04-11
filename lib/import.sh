@@ -12,8 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# set critical internal variables
-export __tfm_root_dir=$(cd ${BASH_SOURCE[0]%/*}/.. && pwd -P)
+# get current shell context
+_shell=$(ps -p $$ -o comm=)
+
+# calculate script root dir
+if [[ ${_shell} =~ "zsh" ]]; then
+  _script_file="${(%):-%x}"
+else
+  _script_file="${BASH_SOURCE[0]}"
+fi
+
+_script_dir=${_script_file%/*}
+
+export __tfm_root_dir=$(cd ${_script_dir}/.. && pwd -P)
 export __tfm_lib_dir="${__tfm_root_dir}/lib"
 export __tfm_conf_dir="${__tfm_root_dir}/etc"
 

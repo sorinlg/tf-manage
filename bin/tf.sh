@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright (c) 2017 - present Adobe Systems Incorporated. All rights reserved.
 

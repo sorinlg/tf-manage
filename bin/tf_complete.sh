@@ -55,7 +55,11 @@ __suggest_from_path() {
     result=$?
 
     # if the folder does not exist, stop building suggestions
-    [ "${result}" -eq 1 ] && return 1
+    if [ "${result}" -ne 0 ]; then
+        # leave this line here to avoid printing error messages multiple times
+        echo "================================================="
+        return 1
+    fi
 
     # find and store suggestions
     contents="$(ls -A ${search_path} | grep "${search_filter}")"
@@ -66,7 +70,11 @@ __suggest_from_path() {
     result=$?
 
     # if the folder is empty, there are no suggestions to give
-    [ "${result}" -eq 1 ] && return 1
+    if [ "${result}" -ne 0 ]; then
+        # leave this line here to avoid printing error messages multiple times
+        echo "================================================="
+        return 1
+    fi
 
     # otherwise, print suggestions
     echo "${contents}"
@@ -140,14 +148,22 @@ _tf_manage_complete() {
     result=$?
 
     # if we have a config error, do not continue to build suggestions
-    [ "${result}" -ne 0 ] && return 1
+    if [ "${result}" -ne 0 ]; then
+        # leave this line here to avoid printing error messages multiple times
+        echo "================================================="
+        return 1
+    fi
 
     # try loading the project config
     __load_project_config
     result=$?
 
     # if we have a config error, do not continue to build suggestions
-    [ "${result}" -ne 0 ] && return 1
+    if [ "${result}" -ne 0 ]; then
+        # leave this line here to avoid printing error messages multiple times
+        echo "================================================="
+        return 1
+    fi
 
     # get global variables inferred by the wrapper
     __compute_common_paths

@@ -9,7 +9,7 @@ yum -y install wget sudo unzip git bash-completion which
 
 ### MacOS
 ```
-brew install unzip git bash-completion@2 gnu-which coreutils wget
+brew install unzip git bash-completion@2 gnu-which coreutils wget warrensbox/tap/tfswitch
 ```
 
 ## Installation
@@ -26,7 +26,7 @@ cd tf-manage
 ./bin/tf_install.sh
 
 # you can customize the version of terraform that is installed
-./bin/tf_install.sh 1.0.11
+./bin/tf_install.sh 1.8.0
 
 # after the first install, you can use tf_install directly, as it is added to $PATH
 # use it as a lightweight terraform version manager to switch back and forward between multiple versions
