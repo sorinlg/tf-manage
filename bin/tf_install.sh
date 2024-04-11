@@ -55,6 +55,7 @@ function usage {
 version=${1:-1.8.0}
 
 # generic folder logic
+install_dir='/opt/terraform'
 install_dir_wrapper='/opt/terraform/tf-manage'
 plugin_cache_dir="$HOME/.terraform.d/${version}/plugin-cache"
 tf_config_path="${HOME}/.terraformrc"
@@ -79,6 +80,15 @@ _cmd="sudo echo \"Thank you! Continuing installation...\""
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[5]="no_print_status"
+run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
+
+# prepare install dir
+_message="Preparing install dir ${install_dir}"
+_cmd="sudo mkdir -m 0775 -p ${install_dir} && sudo chown $(whoami): ${install_dir}"
+_flags=(${_DEFAULT_CMD_FLAGS[@]})
+_flags[0]="strict"
+_flags[4]="no_print_message"
+_flags[6]="no_print_outcome"
 run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # install terraform

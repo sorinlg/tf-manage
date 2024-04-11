@@ -1,8 +1,18 @@
 # tf-manage
 A simple Terraform wrapper for organising your code and workflow.
 
+## Run it in a container
+```bash
+docker run -it --platform=linux/amd64 -v $(PWD):/app ghcr.io/sorinlg/tf-manage:main
+```
+
 ## Requirements
-### Linux
+### Oracle Linux 9 slim
+```bash
+microdnf -y install wget sudo unzip git bash-completion which procps
+```
+
+### Centos 7
 ```bash
 yum -y install wget sudo unzip git bash-completion which
 ```
