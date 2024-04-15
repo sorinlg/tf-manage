@@ -1,11 +1,12 @@
 # tf-manage
 
 ## Changelog
-### 6.0.0
+### v6.0.0
 - [added] support for zsh (and completion)
 - [changed] installation method for terraform now uses tfswitch
 - [changed] installation method for tf-manage now is a simple symlink
 - [vendor] pin bash-framework 0.9.0 (added zsh support)
+- [added] embedding input vars into tfvars via environment vars, to provide tfm context awareness inside terraform
 
 ### 5.8.0
 - [added] support for `workspace` terraform commands

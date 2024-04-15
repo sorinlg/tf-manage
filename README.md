@@ -3,6 +3,7 @@ A simple Terraform wrapper for organising your code and workflow.
 
 ## Run it in a container
 ```bash
+docker pull ghcr.io/sorinlg/tf-manage:main
 docker run -it --platform=linux/amd64 -v $(PWD):/app ghcr.io/sorinlg/tf-manage:main
 ```
 
