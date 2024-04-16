@@ -6,6 +6,7 @@ docker-build:
 docker-push: docker-build
 	docker push $(DOCKER_IMAGE)
 
-docker-run: docker-build
-	docker run --platform=linux/amd64 -it --rm $(DOCKER_IMAGE) bash
+docker-iterate: docker-build docker-run
 
+docker-run:
+	docker run --platform=linux/amd64 -it --rm -v $(PWD):/app $(DOCKER_IMAGE) bash
