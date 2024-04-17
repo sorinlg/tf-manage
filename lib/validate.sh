@@ -116,13 +116,13 @@ __validate_tf_action() {
     run_cmd_silent_strict "${_cmd}" "Validating supplied action" "$(echo -e "Action ${action_emph} is invalid\nValid options include: ${valid_actions[@]}" | decorate_error)"
 }
 
-__validate_component() {
-    local component="${_COMPONENT}"
-    local component_emph="$(__add_emphasis_blue "${component}")"
+__validate_repo() {
+    local repo="${_REPO}"
+    local repo_emph="$(__add_emphasis_blue "${repo}")"
 
-    ## Check component is set
-    _cmd="! test -z \"${component}\""
-    run_cmd_strict "${_cmd}" "Checking component ${component_emph} is valid" "$(echo -e "Component is empty.\nMake sure the first argument is set to a non-null string" | decorate_error)"
+    ## Check repo is set
+    _cmd="! test -z \"${repo}\""
+    run_cmd_strict "${_cmd}" "Checking repo ${repo_emph} is valid" "$(echo -e "Component is empty.\nMake sure the first argument is set to a non-null string" | decorate_error)"
 }
 
 __validate_product() {

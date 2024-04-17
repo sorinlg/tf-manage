@@ -45,31 +45,36 @@ source "${ROOT_DIR}/../lib/import.sh"
 ### Input validation
 ###############################################################################
 function usage {
-    cmd="${BASH_SOURCE[0]##*/} <product> <repo> <module> <env> <component> <action> [workspace]"
+    cmd="${BASH_SOURCE[0]##*/} <product> <module> <env> <module_instance> <action> [workspace]"
     error "Usage: ${cmd}"
     exit -1
 }
 
 # number of arguments
-( [ "$#" -lt 6 ] || [ "$#" -gt 7 ] ) && usage
+( [ "$#" -lt 5 ] || [ "$#" -gt 6 ] ) && usage
 
 # gather input vars
 _PRODUCT=${1}
-_COMPONENT=${2}
-_MODULE=${3}
-_ENV=${4}
-_VARS=${5}
-action_raw="${6}"
+_MODULE=${2}
+_ENV=${3}
+_MODULE_INSTANCE=${4}
+action_raw="${5}"
 action="${action_raw%% *}"
 action_flags="${action_raw//$action}"
 _TF_ACTION=${action}
 _TF_ACTION_FLAGS=${action_flags:-}
-_WORKSPACE_OVERRIDE=${7:-workspace=}
+_WORKSPACE_OVERRIDE=${6:-workspace=}
 
 ### Load configuration
 ###############################################################################
 __load_global_config
 __load_project_config
+# if we have a config error, stop and throw an error
+if [ "${result}" -ne 0 ]; then
+    # leave this line here to avoid printing error messages multiple times
+    info "Exiting due to configuration error"
+    exit 1
+fi
 
 # get global variables inferred by the wrapper
 __compute_common_paths
@@ -80,7 +85,7 @@ __detect_env
 ### Check folder structure is valid
 ###############################################################################
 __validate_product
-__validate_component
+__validate_repo
 __validate_module_dir
 __validate_env_dir
 __validate_config_path

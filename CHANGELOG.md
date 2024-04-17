@@ -1,6 +1,11 @@
 # tf-manage
 
 ## Changelog
+### v6.1.0
+- [breaking] CLI interface: <repo> is no longer an argument, it is now a mandatory entry in the .tfm config
+- [changed] CLI interface: <component> is now called <module_instance> (to provide a more intuitive name and clarify the purpose)
+- [added] examples folder with a demo project
+
 ### v6.0.0
 - [breaking] `apply_tfplan` renamed to `apply_plan`
 - [fixed] some paths were not safe to contain spaces
@@ -42,7 +47,7 @@
 - [added] support for `taint`, `untaint` terraform commands
 
 ### 5.4.0
-- [changed] you can now pass additional flags/args to terraform actions by quoting the action and appending additional flags/args (example: `tf <project> <repo> <module> <env> <component> 'output -json'`)
+- [changed] you can now pass additional flags/args to terraform actions by quoting the action and appending additional flags/args (example: `tf <project> <repo> <module> <env> <module_instance> 'output -json'`)
 - [added] the above change allows us to run commands like `terraform state` within the wrapper.
   - `show`, `state`, `providers` were allowlisted for the wrapper.
 

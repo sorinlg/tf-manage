@@ -25,7 +25,7 @@ __run_action_plan() {
     local detailed_exitcode_flag='disabled'
 
     # build wrapper command
-    local _cmd="${_TFM_TF_CMD} ${_TF_ACTION} -var-file='${var_file_path}' -out '${plan_file_path}' ${_TF_ACTION_FLAGS}"
+    local _cmd="${_TFM_TF_CMD} ${_TF_ACTION} -var-file='${var_file_path}' -out '${plan_file_path}' ${_TFM_EXTRA_VARS} ${_TF_ACTION_FLAGS}"
     local _message="Executing $(__add_emphasis_magenta "terraform plan")"
     local _extra_notice="This $(__add_emphasis_green 'will not') affect infrastructure resources."
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
@@ -333,7 +333,7 @@ __get_tf_version() {
 
 ## Main Terraform wrapper control logic
 __tf_controller() {
-    _TFM_EXTRA_VARS="-var 'tfm_product=${_PRODUCT}' -var 'tfm_component=${_COMPONENT}' -var 'tfm_module=${_MODULE}' -var 'tfm_env=${_ENV}' -var 'tfm_vars=${_VARS}'"
+    _TFM_EXTRA_VARS="-var 'tfm_product=${_PRODUCT}' -var 'tfm_repo=${_REPO}' -var 'tfm_module=${_MODULE}' -var 'tfm_env=${_ENV}' -var 'tfm_module_instance=${_MODULE_INSTANCE}'"
     _TFM_TF_CMD="terraform"
 
     # get Terraform version from CLI

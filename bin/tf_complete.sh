@@ -85,7 +85,7 @@ _tfm_suggest_product() {
     return $?
 }
 
-_tfm_suggest_component() {
+_tfm_suggest_repo() {
     # the only suggestion we can think of is the repository name
     echo "${__tfm_project_dir##*/}"
     return $?
@@ -182,20 +182,18 @@ _tf_manage_complete() {
     if [ $COMP_CWORD -eq 1 ]; then
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_product)" -- $cur_word) )
     elif [ $COMP_CWORD -eq 2 ]; then
-        COMPREPLY=( $(compgen -W "$(_tfm_suggest_component)" -- $cur_word) )
-    elif [ $COMP_CWORD -eq 3 ]; then
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_module)" -- $cur_word) )
-    elif [ $COMP_CWORD -eq 4 ]; then
-        selected_product="${COMP_WORDS[$COMP_CWORD-3]}"
+    elif [ $COMP_CWORD -eq 3 ]; then
+        selected_product="${COMP_WORDS[$COMP_CWORD-2]}"
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_env ${selected_product})" -- $cur_word) )
-    elif [ $COMP_CWORD -eq 5 ]; then
+    elif [ $COMP_CWORD -eq 4 ]; then
         selected_env="${COMP_WORDS[$COMP_CWORD-1]}"
         selected_module="${COMP_WORDS[$COMP_CWORD-2]}"
-        selected_product="${COMP_WORDS[$COMP_CWORD-4]}"
+        selected_product="${COMP_WORDS[$COMP_CWORD-3]}"
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_config ${selected_product} ${selected_env} ${selected_module})" -- $cur_word) )
-    elif [ $COMP_CWORD -eq 6 ]; then
+    elif [ $COMP_CWORD -eq 5 ]; then
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_action)" -- $cur_word) )
-    elif [ $COMP_CWORD -eq 7 ]; then
+    elif [ $COMP_CWORD -eq 6 ]; then
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_workspace_override)" -- $cur_word) )
     else
         COMPREPLY=()
