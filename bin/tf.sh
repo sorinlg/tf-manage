@@ -96,3 +96,5 @@ cd "${TF_MODULE_PATH}"
 ### Build terraform action command
 ###############################################################################
 __tf_controller
+result=$?
+exit $result

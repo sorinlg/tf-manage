@@ -120,7 +120,7 @@ __detect_env() {
     fi
 
     # extra warning message
-    local _unattended_notice="$(__add_emphasis_red "${TF_EXEC_MODE}") mode means changes are $(__add_emphasis_red 'AUTO-ACCEPTED!!!')"
+    local _unattended_notice="Changes will be $(__add_emphasis_red 'AUTO-ACCEPTED!!!')"
 
     # report exec mode
     info "Detected exec mode: ${tf_exec_mode_red}"
