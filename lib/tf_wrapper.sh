@@ -124,6 +124,7 @@ __run_action_get() {
     local _message="Executing $(__add_emphasis_green "terraform get")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -137,6 +138,7 @@ __run_action_output() {
     local _message="Executing $(__add_emphasis_green "terraform output")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -150,6 +152,7 @@ __run_action_show() {
     local _message="Executing $(__add_emphasis_green "terraform show")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -163,6 +166,7 @@ __run_action_state() {
     local _message="Executing $(__add_emphasis_green "terraform state")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -176,6 +180,7 @@ __run_action_workspace() {
     local _message="Executing $(__add_emphasis_green "terraform workspace")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -189,6 +194,7 @@ __run_action_taint() {
     local _message="Executing $(__add_emphasis_green "terraform taint")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -202,6 +208,7 @@ __run_action_untaint() {
     local _message="Executing $(__add_emphasis_green "terraform untaint")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -240,6 +247,7 @@ __run_action_providers() {
     local _message="Executing $(__add_emphasis_green "terraform ${_TF_ACTION}")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -253,6 +261,7 @@ __run_action_init() {
     local _message="Executing $(__add_emphasis_green "terraform init")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -269,6 +278,7 @@ __run_action_refresh() {
     local _message="Executing $(__add_emphasis_green "terraform refresh")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
@@ -282,6 +292,7 @@ __run_action_fmt() {
     local _message="Executing $(__add_emphasis_green "terraform fmt")"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
     _flags[0]='strict'
+    _flags[1]='print_cmd'
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"

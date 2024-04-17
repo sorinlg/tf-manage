@@ -52,11 +52,12 @@ function usage {
 ## -- Setup
 # gather input vars
 # set TF version
-version=${1:-1.8.0}
+version=${1:-1.8.1}
 
 # generic folder logic
 install_dir='/opt/terraform'
-install_dir_wrapper='/opt/terraform/tf-manage'
+install_dir_wrapper_default_path='/opt/terraform/tf-manage'
+install_dir_wrapper="${TFM_INSTALL_PATH:-${install_dir_wrapper_default_path}}"
 plugin_cache_dir="$HOME/.terraform.d/${version}/plugin-cache"
 tf_config_path="${HOME}/.terraformrc"
 tf_wrapper_repo=$(git --git-dir=${ROOT_DIR}/.git remote get-url origin)
@@ -91,8 +92,22 @@ _flags[4]="no_print_message"
 _flags[6]="no_print_outcome"
 run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
-# install terraform
-tfswitch ${version}
+# check tfswitch installation
+_message="Checking tfswitch is installed"
+_cmd="which tfswitch"
+_flags=(${_DEFAULT_CMD_FLAGS[@]})
+_flags[0]="strict"
+_flags[4]="no_print_message"
+_flags[6]="no_print_outcome"
+run_cmd_silent "${_cmd}" "${_message}" "${_flags[@]}"
+
+# install terraform via tfswitch
+_message="Installing terraform version ${version} via tfswitch"
+_cmd="tfswitch ${version}"
+_flags=(${_DEFAULT_CMD_FLAGS[@]})
+_flags[0]="strict"
+_flags[6]="no_print_outcome"
+run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # install terraform config
 _message="Installing default TF configuration at \"${tf_config_path}\""
@@ -113,6 +128,14 @@ _flags[6]="no_print_outcome"
 run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # test installation
+_message="terraform is in PATH"
+_cmd="which terraform"
+_flags=(${_DEFAULT_CMD_FLAGS[@]})
+_flags[0]="strict"
+_flags[4]="no_print_message"
+_flags[6]="no_print_outcome"
+run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
+
 _message="Checking installation by printing the version"
 _cmd="terraform version"
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
@@ -122,7 +145,7 @@ run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # check for old installation method
 _message="Checking for old installations of \"${install_dir_wrapper}\""
-_cmd="test -h \"${install_dir_wrapper}\" || (! test -h /opt/terraform/tf-manage && test -d \"${install_dir_wrapper}\" && echo \"Previous installation found at ${install_dir_wrapper}. Please remove it manually.\" && false) || (! test -d \"${install_dir_wrapper}\")"
+_cmd="test -h \"${install_dir_wrapper}\" || (! test -h \"${install_dir_wrapper}\" && test -d \"${install_dir_wrapper}\" && echo \"Previous installation found at ${install_dir_wrapper}. Please remove it manually.\" && false) || (! test -d \"${install_dir_wrapper}\")"
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[4]="no_print_message"
@@ -160,7 +183,7 @@ run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 if [ "${machine}" = 'Mac' ]; then
     if [ -d "$(brew --prefix)/etc/bash_completion.d" ]; then
         _message="Installing bash completion for wrapper"
-        _cmd="ln -fs \"${install_dir_wrapper}/bin/tf_complete.sh\" \"$(brew --prefix)/etc/bash_completion.d/tf\""
+        _cmd="sudo ln -fs \"${install_dir_wrapper}/bin/tf_complete.sh\" \"$(brew --prefix)/etc/bash_completion.d/tf\""
         _flags=(${_DEFAULT_CMD_FLAGS[@]})
         _flags[0]="strict"
         _flags[4]="no_print_message"
@@ -177,7 +200,7 @@ if [ "${machine}" = 'Mac' ]; then
 elif [ "${machine}" = 'Linux' ]; then
     if [ -e "/etc/bash_completion.d/" ]; then
         _message="Installing bash completion for wrapper. The \"tf\" command will have bash completion support in new shells"
-        _cmd="ln -fs \"${install_dir_wrapper}/bin/tf_complete.sh\" \"/etc/bash_completion.d/tf\""
+        _cmd="sudo ln -fs \"${install_dir_wrapper}/bin/tf_complete.sh\" \"/etc/bash_completion.d/tf\""
         _flags=(${_DEFAULT_CMD_FLAGS[@]})
         _flags[0]="strict"
         _flags[4]="no_print_message"

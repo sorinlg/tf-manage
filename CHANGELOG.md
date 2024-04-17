@@ -9,6 +9,7 @@
 - [added] embedding input vars into tfvars via environment vars, to provide tfm context awareness inside terraform
 - [added] embed AWS CLI 2.15.38 in the image
 - [fixed] some paths were not safe to contain spaces
+- [changed] docker image uses non-root user
 
 ### 5.8.0
 - [added] support for `workspace` terraform commands
