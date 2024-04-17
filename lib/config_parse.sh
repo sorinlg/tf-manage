@@ -15,7 +15,7 @@
 ## prepare config_not_found error
 __config_not_found_err() {
 err_part1=$(decorate_error <<-HEREDOC
-    Couldn\'t find tf-manage config file $(__add_emphasis_blue ${__tfm_project_config_path##*/}) for $(__add_emphasis_blue ${__tfm_project_dir##*/})
+    Couldn\'t find tf-manage config file $(__add_emphasis_blue "${__tfm_project_config_path##*/}") for $(__add_emphasis_blue "${__tfm_project_dir##*/}")
     You must create it at ${__tfm_project_config_path}
     Or generate it, by running the snippet below:
 HEREDOC
@@ -50,12 +50,12 @@ __load_project_config() {
     export __tfm_project_config_path="${__tfm_project_dir}/.tfm.conf"
 
     ## Check config file exists
-    _cmd="test -f ${__tfm_project_config_path}"
+    _cmd="test -f \"${__tfm_project_config_path}\""
     run_cmd_silent "${_cmd}" "Checking tf-manage project config exists..." "$(__config_not_found_err)"
     result=$?
 
     ## import the project-specific configuration
-    [ $result -eq 0 ] && source ${__tfm_project_config_path}
+    [ $result -eq 0 ] && source "${__tfm_project_config_path}"
 
     # build project paths
     export TF_PROJECT_MODULE_PATH="${__tfm_project_dir}/${__tfm_module_rel_path}"
@@ -69,12 +69,12 @@ __load_global_config() {
     export __tfm_global_config_path="${__tfm_conf_dir}/global_config.sh"
 
     ## Check config file exists
-    _cmd="test -f ${__tfm_global_config_path}"
-    run_cmd_silent "${_cmd}" "Checking tf-manage global config exists..." "$(echo -e "Global config missing!\nShould be at $(__add_emphasis_blue ${__tfm_global_config_path})")"
+    _cmd="test -f \"${__tfm_global_config_path}\""
+    run_cmd_silent "${_cmd}" "Checking tf-manage global config exists..." "$(echo -e "Global config missing!\nShould be at $(__add_emphasis_blue "${__tfm_global_config_path}")")"
     result=$?
 
     ## import the project-specific configuration
-    [ $result -eq 0 ] && source ${__tfm_global_config_path}
+    [ $result -eq 0 ] && source "${__tfm_global_config_path}"
 
     # pass command exit-code to caller
     return ${result}

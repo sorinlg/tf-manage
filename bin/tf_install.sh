@@ -83,8 +83,8 @@ _flags[5]="no_print_status"
 run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # prepare install dir
-_message="Preparing install dir ${install_dir}"
-_cmd="sudo mkdir -m 0775 -p ${install_dir} && sudo chown $(whoami): ${install_dir}"
+_message="Preparing install dir \"${install_dir}\""
+_cmd="sudo mkdir -m 0775 -p \"${install_dir}\" && sudo chown $(whoami): \"${install_dir}\""
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[4]="no_print_message"
@@ -95,8 +95,8 @@ run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 tfswitch ${version}
 
 # install terraform config
-_message="Installing default TF configuration at ${tf_config_path}"
-_cmd="echo 'plugin_cache_dir   = \"${plugin_cache_dir}\"' > ${tf_config_path}"
+_message="Installing default TF configuration at \"${tf_config_path}\""
+_cmd="echo 'plugin_cache_dir   = \"${plugin_cache_dir}\"' > \"${tf_config_path}\""
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[4]="no_print_message"
@@ -104,7 +104,7 @@ _flags[6]="no_print_outcome"
 run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # setup terraform plugin cache directory
-_message="Preparing TF plugin cache directory at ${plugin_cache_dir}"
+_message="Preparing TF plugin cache directory at \"${plugin_cache_dir}\""
 _cmd="mkdir -p ${plugin_cache_dir}"
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
@@ -121,8 +121,8 @@ _flags[6]="no_print_outcome"
 run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # check for old installation method
-_message="Checking for old installations of ${install_dir_wrapper}"
-_cmd="test -h ${install_dir_wrapper} || (! test -h /opt/terraform/tf-manage && test -d ${install_dir_wrapper} && echo \"Previous installation found at ${install_dir_wrapper}. Please remove it manually.\" && false) || (! test -d ${install_dir_wrapper})"
+_message="Checking for old installations of \"${install_dir_wrapper}\""
+_cmd="test -h \"${install_dir_wrapper}\" || (! test -h /opt/terraform/tf-manage && test -d \"${install_dir_wrapper}\" && echo \"Previous installation found at ${install_dir_wrapper}. Please remove it manually.\" && false) || (! test -d \"${install_dir_wrapper}\")"
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[4]="no_print_message"
@@ -130,8 +130,8 @@ _flags[6]="no_print_outcome"
 run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # install wrapper
-_message="Installing tf-manage terraform wrapper at ${install_dir_wrapper}"
-_cmd="test -h ${install_dir_wrapper} || ln -s ${ROOT_DIR} ${install_dir_wrapper}"
+_message="Installing tf-manage terraform wrapper at \"${install_dir_wrapper}\""
+_cmd="test -h \"${install_dir_wrapper}\" || ln -s \"${ROOT_DIR}\" \"${install_dir_wrapper}\""
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[4]="no_print_message"
@@ -140,7 +140,7 @@ run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # add wrapper to PATH
 _message="Adding tf wrapper to PATH"
-_cmd="sudo ln -s -f ${install_dir_wrapper}/bin/tf.sh /usr/local/bin/tf"
+_cmd="sudo ln -s -f \"${install_dir_wrapper}/bin/tf.sh\" \"/usr/local/bin/tf\""
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[4]="no_print_message"
@@ -149,7 +149,7 @@ run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 
 # add wrapper installer to PATH
 _message="Adding tf wrapper installer to PATH"
-_cmd="sudo ln -s -f ${install_dir_wrapper}/bin/tf_install.sh /usr/local/bin/tf_install"
+_cmd="sudo ln -s -f \"${install_dir_wrapper}/bin/tf_install.sh\" \"/usr/local/bin/tf_install\""
 _flags=(${_DEFAULT_CMD_FLAGS[@]})
 _flags[0]="strict"
 _flags[4]="no_print_message"
@@ -160,7 +160,7 @@ run_cmd "${_cmd}" "${_message}" "${_flags[@]}"
 if [ "${machine}" = 'Mac' ]; then
     if [ -d "$(brew --prefix)/etc/bash_completion.d" ]; then
         _message="Installing bash completion for wrapper"
-        _cmd="ln -fs ${install_dir_wrapper}/bin/tf_complete.sh $(brew --prefix)/etc/bash_completion.d/tf"
+        _cmd="ln -fs \"${install_dir_wrapper}/bin/tf_complete.sh\" \"$(brew --prefix)/etc/bash_completion.d/tf\""
         _flags=(${_DEFAULT_CMD_FLAGS[@]})
         _flags[0]="strict"
         _flags[4]="no_print_message"
@@ -177,7 +177,7 @@ if [ "${machine}" = 'Mac' ]; then
 elif [ "${machine}" = 'Linux' ]; then
     if [ -e "/etc/bash_completion.d/" ]; then
         _message="Installing bash completion for wrapper. The \"tf\" command will have bash completion support in new shells"
-        _cmd="ln -fs ${install_dir_wrapper}/bin/tf_complete.sh /etc/bash_completion.d/tf"
+        _cmd="ln -fs \"${install_dir_wrapper}/bin/tf_complete.sh\" \"/etc/bash_completion.d/tf\""
         _flags=(${_DEFAULT_CMD_FLAGS[@]})
         _flags[0]="strict"
         _flags[4]="no_print_message"

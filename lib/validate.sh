@@ -18,9 +18,9 @@ __tfm_project_dir_not_found_err() {
     dir_path="${2}"
     tfm_dir_variable="${3}"
 err_part1=$(decorate_error <<-HEREDOC
-    Couldn\'t find ${dir_type} dir $(__add_emphasis_blue ${dir_path}) for $(__add_emphasis_blue ${__tfm_project_dir##*/})
-    Please check ${__tfm_conf_path} for the $(__add_emphasis_blue ${tfm_dir_variable}) entry.
-    The current setting is ${tfm_dir_variable}=$(__add_emphasis_blue ${!tfm_dir_variable})
+    Couldn\'t find ${dir_type} dir $(__add_emphasis_blue "${dir_path}") for $(__add_emphasis_blue "${__tfm_project_dir##*/}")
+    Please check ${__tfm_conf_path} for the $(__add_emphasis_blue "${tfm_dir_variable}") entry.
+    The current setting is ${tfm_dir_variable}=$(__add_emphasis_blue "${!tfm_dir_variable}")
     Or generate it, by running the snippet below:
 HEREDOC
 )
@@ -36,53 +36,53 @@ HEREDOC
 __validate_module_dir() {
     # compute project module dir path
     local dir_path="${TF_PROJECT_MODULE_PATH}"
-    local dir_path_emph="$(__add_emphasis_blue ${dir_path})"
+    local dir_path_emph="$(__add_emphasis_blue "${dir_path}")"
 
     ## Check dir exists
-    _cmd="test -d ${dir_path}"
+    _cmd="test -d \"${dir_path}\""
     run_cmd_silent_strict "${_cmd}" "Checking module dir exists" "$(__tfm_project_dir_not_found_err "module" "${dir_path}" "__tfm_module_rel_path")"
 
     ## Check selected module exists
     local module_path="${TF_MODULE_PATH}"
-    local module_name_emph="$(__add_emphasis_blue ${_MODULE})"
-    _cmd="test -d ${module_path}"
+    local module_name_emph="$(__add_emphasis_blue "${_MODULE}")"
+    _cmd="test -d \"${module_path}\""
     run_cmd_strict "${_cmd}" "Checking module ${module_name_emph} exists" "$(echo -e "Module ${module_name_emph} not found at ${dir_path_emph}" | decorate_error)"
 }
 
 __validate_env_dir() {
     # compute project environment dir path
     local dir_path="${TF_PROJECT_CONFIG_PATH}"
-    local dir_path_emph="$(__add_emphasis_blue ${dir_path})"
+    local dir_path_emph="$(__add_emphasis_blue "${dir_path}")"
 
     ## Check dir exists
-    _cmd="test -d ${dir_path}"
+    _cmd="test -d \"${dir_path}\""
     run_cmd_silent_strict "${_cmd}" "Checking environment dir exists" "$(__tfm_project_dir_not_found_err "environment" "${dir_path}" "__tfm_env_rel_path")"
 
     ## Check selected environment exists
     local dir_path="${TF_ENV_PRODUCT_PATH}"
-    local dir_path_emph="$(__add_emphasis_blue ${dir_path})"
+    local dir_path_emph="$(__add_emphasis_blue "${dir_path}")"
     local env_path="${TF_ENV_PATH}"
-    local env_name_emph="$(__add_emphasis_blue ${_ENV})"
-    _cmd="test -d ${env_path}"
+    local env_name_emph="$(__add_emphasis_blue "${_ENV}")"
+    _cmd="test -d \"${env_path}\""
     run_cmd_strict "${_cmd}" "Checking environment ${env_name_emph} exists" "$(echo -e "Environment ${env_name_emph} not found at ${dir_path_emph}" | decorate_error)"
 }
 
 __validate_config_path() {
     # compute project environment dir path
     local dir_path="${TF_MODULE_ENV_CONF_PATH}"
-    local dir_path_emph="$(__add_emphasis_blue ${dir_path})"
-    local env_name_emph="$(__add_emphasis_blue ${_ENV})"
-    local module_name_emph="$(__add_emphasis_blue ${_MODULE})"
+    local dir_path_emph="$(__add_emphasis_blue "${dir_path}")"
+    local env_name_emph="$(__add_emphasis_blue "${_ENV}")"
+    local module_name_emph="$(__add_emphasis_blue "${_MODULE}")"
 
     ## Check dir exists
-    _cmd="test -d ${dir_path}"
+    _cmd="test -d \"${dir_path}\""
     run_cmd_silent_strict "${_cmd}" "Checking module config dir exists" "$(echo -e "Module ${module_name_emph} is missing a configuration folder for environment ${env_name_emph}\nShould be at ${dir_path_emph}" | decorate_error)"
 
     ## Check selected module has configuration present in the selected env
     local var_path="${TF_VAR_FILE_PATH}"
-    local var_path_emph="$(__add_emphasis_blue ${var_path##*/})"
-    local var_path_abs_emph="$(__add_emphasis_blue ${var_path})"
-    _cmd="test -f ${var_path}"
+    local var_path_emph="$(__add_emphasis_blue "${var_path##*/}")"
+    local var_path_abs_emph="$(__add_emphasis_blue "${var_path}")"
+    _cmd="test -f \"${var_path}\""
     run_cmd_strict "${_cmd}" "Checking config ${var_path_emph} exists" "$(echo -e "Terraform config file ${var_path_emph} not found at ${var_path_abs_emph}" | decorate_error)"
 }
 
@@ -102,9 +102,9 @@ __print_valid_options() {
 __validate_tf_action() {
     local valid_actions="${__tfm_allowed_actions}"
     local action="${_TF_ACTION}"
-    local action_emph="$(__add_emphasis_blue ${action})"
+    local action_emph="$(__add_emphasis_blue "${action}")"
     local global_config_path="${__tfm_conf_dir}/global_config.sh"
-    local global_config_path_emph="$(__add_emphasis_blue ${global_config_path})"
+    local global_config_path_emph="$(__add_emphasis_blue "${global_config_path}")"
 
     ## Check selected product is whitelisted
     __assert_string_list_contains "${action}" "${valid_actions}"
@@ -121,7 +121,7 @@ __validate_component() {
     local component_emph="$(__add_emphasis_blue "${component}")"
 
     ## Check component is set
-    _cmd="! test -z ${component}"
+    _cmd="! test -z \"${component}\""
     run_cmd_strict "${_cmd}" "Checking component ${component_emph} is valid" "$(echo -e "Component is empty.\nMake sure the first argument is set to a non-null string" | decorate_error)"
 }
 
@@ -129,10 +129,10 @@ __validate_product() {
     local product="${_PRODUCT}"
     local product_emph="$(__add_emphasis_blue "${product}")"
     local dir_path="${TF_PROJECT_CONFIG_PATH}/${_PRODUCT}"
-    local dir_path_emph="$(__add_emphasis_blue ${dir_path})"
+    local dir_path_emph="$(__add_emphasis_blue "${dir_path}")"
 
     ## Check selected product is whitelisted
-    _cmd="test -d ${dir_path}"
+    _cmd="test -d \"${dir_path}\""
     run_cmd_strict "${_cmd}" "Checking product ${product_emph} is valid" "$(echo -e "Product path \"${dir_path_emph}\" was not found!\n" | decorate_error)"
 }
 

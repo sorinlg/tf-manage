@@ -318,7 +318,7 @@ __tf_controller() {
     local wrapper_action_method="__run_action_${_TF_ACTION}"
 
     # Informal notice for current directory
-    info "Running from ${PWD}"
+    info "Running from \"${PWD}\""
 
     ### Check terraform workspace exists and is active
     ###############################################################################

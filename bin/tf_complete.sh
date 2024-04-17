@@ -50,7 +50,7 @@ __suggest_from_path() {
     __safe_unset_bash_setting 'u'
 
     # test search path exists
-    _cmd="test -d ${search_path}"
+    _cmd="test -d \"${search_path}\""
     run_cmd_silent "${_cmd}" "" "$(__search_path_not_found ${search_path})"
     result=$?
 

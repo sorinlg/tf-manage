@@ -8,6 +8,7 @@
 - [vendor] pin bash-framework 0.9.0 (added zsh support)
 - [added] embedding input vars into tfvars via environment vars, to provide tfm context awareness inside terraform
 - [added] embed AWS CLI 2.15.38 in the image
+- [fixed] some paths were not safe to contain spaces
 
 ### 5.8.0
 - [added] support for `workspace` terraform commands
