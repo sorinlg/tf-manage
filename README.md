@@ -62,7 +62,7 @@ git submodule update --init --recursive --remote
 The "tf" command should be registered to the PATH
 ```bash
 $ tf
-[tf] Usage: tf <product> <repo> <module> <env> <component> <action> [workspace]
+[tf] Usage: tf <product> <module> <env> <module_instance> <action> [workspace]
 ```
 
 Prepare environment for testing bash-completion
@@ -84,6 +84,7 @@ You should be greeted by the interactive repository initiation tutorial built in
 [tf] Or generate it, by running the snippet below:
 cat > /private/tmp/test/.tfm.conf <<-EOF
 #!/bin/bash
+export __tfm_repo_name='<YOUR_REPO_NAME>'
 export __tfm_env_rel_path='terraform/environments'
 export __tfm_module_rel_path='terraform/modules'
 EOF
@@ -96,23 +97,47 @@ EOF
 - use an intuitive folder structure that blends flexibility and scalability for the needs of most team sizes
 ```bash
 # sample folder structure
-$ tree -a -I .git
+cd examples/tfm-project
+tree -a -I .git -I .terraform -I terraform.tfstate.d .
+
 .
+├── .gitignore
 ├── .tfm.conf
+├── LICENSE
+├── README.md
 └── terraform
     ├── environments
-    │   └── product1
-    │       ├── env1
-    │       │   └── module1
-    │       │       ├── component1.tfvars
-    │       │       └── component2.tfvars
-    │       └── env2
-    │           └── module1
-    │               ├── component1.tfvars
-    │               └── component2.tfvars
+    │   ├── project1
+    │   │   ├── dev
+    │   │   │   └── sample_module
+    │   │   │       ├── instance_x.tfvars
+    │   │   │       ├── instance_x.tfvars.tfplan
+    │   │   │       ├── instance_y.tfvars
+    │   │   │       └── instance_z.tfvars
+    │   │   ├── prod
+    │   │   │   └── sample_module
+    │   │   │       ├── instance_x.tfvars
+    │   │   │       ├── instance_y.tfvars
+    │   │   │       └── instance_z.tfvars
+    │   │   └── staging
+    │   │       └── sample_module
+    │   │           ├── instance_x.tfvars
+    │   │           ├── instance_y.tfvars
+    │   │           └── instance_z.tfvars
+    │   └── project2
+    │       ├── dev
+    │       │   └── sample_module
+    │       │       └── instance_foo.tfvars
+    │       └── prod
+    │           └── sample_module
+    │               └── instance_foo.tfvars
     └── modules
-        └── module1
-            └── main.tf
+        └── sample_module
+            ├── .terraform.lock.hcl
+            ├── main.tf
+            ├── outputs.tf
+            ├── tfm.tf
+            └── variables.tf
 ```
 - lower risk of human error - the wrapper generates these for you
   - var-file paths (built into terraform commands that accept them)
@@ -124,7 +149,7 @@ $ tree -a -I .git
   - this will set an internal flag that will disable user prompts and auto-accept terraform confirmations for some commands like apply and destroy.`
 ```bash
 $ tf
-[tf] Usage: tf <product> <repo> <module> <env> <component> <action> [workspace]
+[tf] Usage: tf <product> <repo> <module> <env> <module_instance> <action> [workspace]
 ```
 
 ### Ease of use
@@ -143,7 +168,7 @@ $ tf
 - use workspaces and remote state to reference upstream module outputs in a logical and programmable-friendly manner
 ```
 # Sample workspaces
-Pattern: <product>.<repo>.<module>.<env>.<component>
+Pattern: <product>.<repo>.<module>.<env>.<module_instance>
 Samples:
 adobe-dps.network-management.vpc.prod01.services
 adobe-dps.network-management.vpc.prod01.admin

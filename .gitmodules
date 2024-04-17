@@ -1,3 +1,6 @@
 [submodule "vendor/bash-framework"]
 	path = vendor/bash-framework
 	url = git@github.com:sorinlg/bash-framework.git
+[submodule "examples/tfm-project"]
+	path = examples/tfm-project
+	url = git@github.com:sorinlg/tfm-project.git

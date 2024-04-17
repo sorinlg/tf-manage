@@ -116,13 +116,13 @@ __validate_tf_action() {
     run_cmd_silent_strict "${_cmd}" "Validating supplied action" "$(echo -e "Action ${action_emph} is invalid\nValid options include: ${valid_actions[@]}" | decorate_error)"
 }
 
-__validate_component() {
-    local component="${_COMPONENT}"
-    local component_emph="$(__add_emphasis_blue "${component}")"
+__validate_repo() {
+    local repo="${_REPO}"
+    local repo_emph="$(__add_emphasis_blue "${repo}")"
 
-    ## Check component is set
-    _cmd="! test -z \"${component}\""
-    run_cmd_strict "${_cmd}" "Checking component ${component_emph} is valid" "$(echo -e "Component is empty.\nMake sure the first argument is set to a non-null string" | decorate_error)"
+    ## Check repo is set
+    _cmd="! test -z \"${repo}\""
+    run_cmd_strict "${_cmd}" "Checking repo ${repo_emph} is valid" "$(echo -e "Component is empty.\nMake sure the first argument is set to a non-null string" | decorate_error)"
 }
 
 __validate_product() {
@@ -158,8 +158,6 @@ __validate_tf_workspace() {
     local _cmd="terraform workspace list | grep '${workspace//\./\\.}$'"
     local _message="Checking workspace ${workspace_emph} exists"
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
-    # if we're in a non-interactive environment, fail immediately
-    [ "${TF_EXEC_MODE}" = 'unattended' ] && _flags[0]="strict"
     _flags[1]="no_print_cmd"
     _flags[3]="no_print_output"
     _flags[4]="no_print_message"
@@ -172,7 +170,7 @@ __validate_tf_workspace() {
     ## NOTE: Changing to the module directory is needed for local workspace support
     if [ "${result}" -ne 0 ]; then
         # prepare command and notice
-        local _cmd="cd ${TF_MODULE_PATH} && terraform workspace new ${workspace} && cd -"
+        local _cmd="cd \"${TF_MODULE_PATH}\" && terraform workspace new \"${workspace}\" && cd -"
         local _message="Creating workspace ${workspace_emph_red}"
         local _flags=(${_DEFAULT_CMD_FLAGS[@]})
         _flags[0]="strict"
@@ -183,7 +181,7 @@ __validate_tf_workspace() {
 
         # prompt user first
         _input_question="About to create workspace ${workspace_emph_red}"
-        get_user_input "${_input_question}"
+        [ "${TF_EXEC_MODE}" != 'unattended' ] && get_user_input "${_input_question}"
 
         # execute command
         run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "Could not create workspace!"

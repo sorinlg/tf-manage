@@ -22,9 +22,10 @@ __run_action_plan() {
     # vars
     local var_file_path="${TF_VAR_FILE_PATH}"
     local plan_file_path="${TF_PLAN_FILE_PATH}"
+    local detailed_exitcode_flag='disabled'
 
     # build wrapper command
-    local _cmd="${_TFM_TF_CMD} ${_TF_ACTION} -var-file='${var_file_path}' -out ${plan_file_path} ${_TF_ACTION_FLAGS}"
+    local _cmd="${_TFM_TF_CMD} ${_TF_ACTION} -var-file='${var_file_path}' -out '${plan_file_path}' ${_TFM_EXTRA_VARS} ${_TF_ACTION_FLAGS}"
     local _message="Executing $(__add_emphasis_magenta "terraform plan")"
     local _extra_notice="This $(__add_emphasis_green 'will not') affect infrastructure resources."
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
@@ -32,24 +33,41 @@ __run_action_plan() {
     _flags[1]='print_cmd'
     _flags[4]="no_print_message"
 
+    if [[ "${_TF_ACTION_FLAGS}" =~ '-detailed-exitcode' ]]; then
+        detailed_exitcode_flag='enabled'
+        _flags[9]='0 2'
+    fi
+
     # notify user
     info "${_message}"
     info "${_extra_notice}"
 
     # execute
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
+    result=$?
+
+    if [ "${detailed_exitcode_flag}" = 'enabled' ]; then
+        if [ "${result}" -eq 2 ]; then
+            info "Terraform plan detected changes"
+        elif [ "${result}" -eq 1 ]; then
+            info "Terraform plan detected errors"
+            exit 1
+        fi
+    fi
 
     # inform user .tfplan file was created
     local plan_file_emph="$(__add_emphasis_blue "${plan_file_path}")"
     info "Created Terraform plan file: ${plan_file_emph}"
+
+    return ${result}
 }
 
-__run_action_apply_tfplan() {
+__run_action_apply_plan() {
     # vars
     local plan_file_path="${TF_PLAN_FILE_PATH}"
 
     # build wrapper command
-    local _cmd="${_TFM_TF_CMD} apply ${plan_file_path} ${_TF_ACTION_FLAGS}"
+    local _cmd="${_TFM_TF_CMD} apply '${plan_file_path}' ${_TF_ACTION_FLAGS}"
     local _message="Executing $(__add_emphasis_red "terraform apply")"
     local _extra_notice="This $(__add_emphasis_red 'will') affect infrastructure resources."
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
@@ -74,7 +92,7 @@ __run_action_apply() {
     [ "${TF_EXEC_MODE}" = 'unattended' ] && local extra_tf_args=" -input=false -auto-approve"
 
     # build wrapper command
-    local _cmd="${_TFM_TF_CMD} apply -var-file='${var_file_path}'${extra_tf_args} ${_TF_ACTION_FLAGS}"
+    local _cmd="${_TFM_TF_CMD} apply -var-file='${var_file_path}'${extra_tf_args} ${_TFM_EXTRA_VARS} ${_TF_ACTION_FLAGS}"
     local _message="Executing $(__add_emphasis_red "terraform apply")"
     local _extra_notice="This $(__add_emphasis_red 'will') affect infrastructure resources."
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
@@ -100,7 +118,7 @@ __run_action_destroy() {
     [ "${TF_EXEC_MODE}" = 'unattended' ] && local extra_tf_args=" -auto-approve"
 
     # build wrapper command
-    local _cmd="${_TFM_TF_CMD} ${_TF_ACTION} -var-file='${var_file_path}'${extra_tf_args} ${_TF_ACTION_FLAGS}"
+    local _cmd="${_TFM_TF_CMD} ${_TF_ACTION} -var-file='${var_file_path}'${extra_tf_args} ${_TFM_EXTRA_VARS} ${_TF_ACTION_FLAGS}"
     local _message="Executing $(__add_emphasis_red "terraform destroy")"
     local _extra_notice="This $(__add_emphasis_red 'will DESTROY') infrastructure resources."
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
@@ -223,7 +241,7 @@ __run_action_import() {
     [ "${TF_EXEC_MODE}" = 'unattended' ] && local extra_tf_args=" -input=false -auto-approve"
 
     # build wrapper command
-    local _cmd="${_TFM_TF_CMD} import -var-file='${var_file_path}'${extra_tf_args} ${_TF_ACTION_FLAGS}"
+    local _cmd="${_TFM_TF_CMD} import -var-file='${var_file_path}'${extra_tf_args} ${_TFM_EXTRA_VARS} ${_TF_ACTION_FLAGS}"
     local _message="Executing $(__add_emphasis_red "terraform import")"
     local _extra_notice="This $(__add_emphasis_red 'will') affect infrastructure resources."
     local _flags=(${_DEFAULT_CMD_FLAGS[@]})
@@ -315,8 +333,8 @@ __get_tf_version() {
 
 ## Main Terraform wrapper control logic
 __tf_controller() {
-    _TFM_EXTRA_VARS="TF_VAR_tfm_product=${_PRODUCT} TF_VAR_tfm_component=${_COMPONENT} TF_VAR_tfm_module=${_MODULE} TF_VAR_tfm_env=${_ENV} TF_VAR_tfm_vars=${_VARS}"
-    _TFM_TF_CMD="${_TFM_EXTRA_VARS} terraform"
+    _TFM_EXTRA_VARS="-var 'tfm_product=${_PRODUCT}' -var 'tfm_repo=${_REPO}' -var 'tfm_module=${_MODULE}' -var 'tfm_env=${_ENV}' -var 'tfm_module_instance=${_MODULE_INSTANCE}'"
+    _TFM_TF_CMD="terraform"
 
     # get Terraform version from CLI
     __get_tf_version

@@ -2,14 +2,22 @@
 
 ## Changelog
 ### v6.0.0
+- [breaking] `apply_tfplan` renamed to `apply_plan`
+- [breaking] CLI interface: <repo> is no longer an argument, it is now a mandatory entry in the .tfm config
+- [fixed] some paths were not safe to contain spaces
+- [fixed] added unbuffer to fix docker output buffering issues in jenkins
+- [added] examples folder with a demo project
 - [added] support for zsh (and completion)
-- [changed] installation method for terraform now uses tfswitch
-- [changed] installation method for tf-manage now is a simple symlink
-- [vendor] pin bash-framework 0.9.0 (added zsh support)
 - [added] embedding input vars into tfvars via environment vars, to provide tfm context awareness inside terraform
 - [added] embed AWS CLI 2.15.38 in the image
-- [fixed] some paths were not safe to contain spaces
+- [added] embed jq in the image
+- [added] embed kubectl in the image
+- [changed] installation method for terraform now uses tfswitch
+- [changed] installation method for tf-manage now is a simple symlink
 - [changed] docker image uses non-root user
+- [changed] CLI interface: <component> is now called <module_instance> (to provide a more intuitive name and clarify the purpose)
+- [fixed] checking workspace existence no longer fails in unattended mode
+- [vendor] pin bash-framework 0.9.0 (added zsh support)
 
 ### 5.8.0
 - [added] support for `workspace` terraform commands
@@ -37,7 +45,7 @@
 - [added] support for `taint`, `untaint` terraform commands
 
 ### 5.4.0
-- [changed] you can now pass additional flags/args to terraform actions by quoting the action and appending additional flags/args (example: `tf <project> <repo> <module> <env> <component> 'output -json'`)
+- [changed] you can now pass additional flags/args to terraform actions by quoting the action and appending additional flags/args (example: `tf <project> <repo> <module> <env> <module_instance> 'output -json'`)
 - [added] the above change allows us to run commands like `terraform state` within the wrapper.
   - `show`, `state`, `providers` were allowlisted for the wrapper.
 
@@ -85,7 +93,7 @@
 - [added] created [README.md](README.md), with usage demo recording
 
 ### 4.4.1
-- [fix] "apply_tfplan" action now correctly runs "terraform apply"
+- [fix] "apply_plan" action now correctly runs "terraform apply"
 - [changed] used a different color for "operator" mode, to stand out from the wrapper argument value validations
 
 ### 4.4.0
@@ -144,7 +152,7 @@
 
 ### 3.3.0
 - [enhancement] renamed wrapper commands to better match post 0.11.x default behaviours
-    + apply --> apply_tfplan
+    + apply --> apply_plan
     + plan_and_apply --> apply
 
 ### 3.2.0

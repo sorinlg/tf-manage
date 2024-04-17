@@ -24,6 +24,7 @@ HEREDOC
 generate_snippet=$(cat <<-HEREDOC
 cat > ${__tfm_project_config_path} <<-EOF
 #!/bin/bash
+export __tfm_repo_name='${__tfm_project_dir##*/}'
 export __tfm_env_rel_path='terraform/environments'
 export __tfm_module_rel_path='terraform/modules'
 EOF
@@ -57,9 +58,15 @@ __load_project_config() {
     ## import the project-specific configuration
     [ $result -eq 0 ] && source "${__tfm_project_config_path}"
 
+    ## validate the project configuration contains the required variables
+    test -z ${__tfm_module_rel_path} && info "Missing $(__add_emphasis_red "__tfm_module_rel_path") variable in $(__add_emphasis_blue "${__tfm_project_config_path}")" && result=1
+    test -z ${__tfm_env_rel_path} && info "Missing $(__add_emphasis_red "__tfm_env_rel_path") variable in $(__add_emphasis_blue "${__tfm_project_config_path}")" && result=1
+    test -z ${__tfm_repo_name} && info "Missing $(__add_emphasis_red "__tfm_repo_name") variable in $(__add_emphasis_blue "${__tfm_project_config_path}")" && result=1
+
     # build project paths
     export TF_PROJECT_MODULE_PATH="${__tfm_project_dir}/${__tfm_module_rel_path}"
     export TF_PROJECT_CONFIG_PATH="${__tfm_project_dir}/${__tfm_env_rel_path}"
+    export _REPO="${__tfm_repo_name}"
 
     # pass command exit-code to caller
     return ${result}
@@ -90,15 +97,15 @@ __compute_common_paths() {
     # selected per-environment module config folder
     export TF_MODULE_ENV_CONF_PATH="${TF_PROJECT_CONFIG_PATH}/${_PRODUCT}/${_ENV}/${_MODULE}"
     # selected per-environment module config var-file
-    export TF_VAR_FILE_PATH="${TF_MODULE_ENV_CONF_PATH}/${_VARS}.tfvars"
+    export TF_VAR_FILE_PATH="${TF_MODULE_ENV_CONF_PATH}/${_MODULE_INSTANCE}.tfvars"
     # selected per-environment module config tfplan file
-    export TF_PLAN_FILE_PATH="${TF_MODULE_ENV_CONF_PATH}/${_VARS}.tfvars.tfplan"
+    export TF_PLAN_FILE_PATH="${TF_MODULE_ENV_CONF_PATH}/${_MODULE_INSTANCE}.tfvars.tfplan"
 
     _separator='.'
 
     ## generated values
     # auto-selected workspace name, composed from component, module, env and var-file name
-    export TF_WORKSPACE_GENERATED="${_PRODUCT}${_separator}${_COMPONENT}${_separator}${_MODULE}${_separator}${_ENV}${_separator}${_VARS}"
+    export TF_WORKSPACE_GENERATED="${_PRODUCT}${_separator}${_REPO}${_separator}${_MODULE}${_separator}${_ENV}${_separator}${_MODULE_INSTANCE}"
 }
 
 __detect_env() {
@@ -120,7 +127,7 @@ __detect_env() {
     fi
 
     # extra warning message
-    local _unattended_notice="$(__add_emphasis_red "${TF_EXEC_MODE}") mode means changes are $(__add_emphasis_red 'AUTO-ACCEPTED!!!')"
+    local _unattended_notice="Changes will be $(__add_emphasis_red 'AUTO-ACCEPTED!!!')"
 
     # report exec mode
     info "Detected exec mode: ${tf_exec_mode_red}"
