@@ -15,4 +15,4 @@
 # limitations under the License.
 
 # globals
-export __tfm_allowed_actions="plan apply destroy get output refresh init apply_plan fmt show state providers taint untaint import workspace"
+export __tfm_allowed_actions="plan apply destroy get output refresh init apply_plan fmt show state providers taint untaint import workspace validate"

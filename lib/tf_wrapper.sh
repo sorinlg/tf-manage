@@ -316,6 +316,20 @@ __run_action_fmt() {
     run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
 }
 
+__run_action_validate() {
+    debug "Entered ${FUNCNAME}"
+
+    # build wrapper command
+    local _cmd="${_TFM_TF_CMD} validate ${_TF_ACTION_FLAGS}"
+    local _message="Executing $(__add_emphasis_green "terraform validate")"
+    local _flags=(${_DEFAULT_CMD_FLAGS[@]})
+    _flags[0]='strict'
+    _flags[1]='print_cmd'
+
+    # execute
+    run_cmd "${_cmd}" "${_message}" "${_flags[@]}" "${_GENERIC_ERR_MESSAGE}"
+}
+
 __get_tf_version() {
     debug "Entered ${FUNCNAME}"
 

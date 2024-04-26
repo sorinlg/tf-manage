@@ -1,6 +1,9 @@
 # tf-manage
 
 ## Changelog
+### v6.2.0
+- [added] support for new command: `validate`
+
 ### v6.1.0
 - [breaking] CLI interface: <repo> is no longer an argument, it is now a mandatory entry in the .tfm config
 - [changed] CLI interface: <component> is now called <module_instance> (to provide a more intuitive name and clarify the purpose)
