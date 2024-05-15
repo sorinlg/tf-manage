@@ -3,7 +3,7 @@ FROM --platform=linux/amd64 oraclelinux:9-slim
 
 # Image configuration
 ARG AWS_CLI_VERSION='2.15.38'
-ARG TERRAFORM_VERSION='1.8.1'
+ARG TERRAFORM_VERSION='1.8.3'
 ARG USERNAME='tf'
 ARG USER_UID='1001'
 ARG USER_GID="${USER_UID}"

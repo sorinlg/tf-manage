@@ -100,10 +100,11 @@ _tfm_suggest_env() {
     # input vars
     __safe_set_bash_setting 'u'
     local selected_product="${1}"
+    local selected_module="${2}"
     __safe_unset_bash_setting 'u'
 
-    # find env folders
-    __suggest_from_path "${TF_PROJECT_CONFIG_PATH}/${selected_product}"
+    # find env folders for the selected product and module
+    find "${__tfm_env_rel_path}/${selected_product}" -type d -mindepth 2 -name "${selected_module}" | sed "s,${__tfm_env_rel_path}/${selected_product}/,,g" | sed "s,/${selected_module},,g"
     return $?
 }
 
@@ -184,13 +185,14 @@ _tf_manage_complete() {
     elif [ $COMP_CWORD -eq 2 ]; then
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_module)" -- $cur_word) )
     elif [ $COMP_CWORD -eq 3 ]; then
+        selected_module="${COMP_WORDS[$COMP_CWORD-1]}"
         selected_product="${COMP_WORDS[$COMP_CWORD-2]}"
-        COMPREPLY=( $(compgen -W "$(_tfm_suggest_env ${selected_product})" -- $cur_word) )
+        COMPREPLY=( $(compgen -W "$(_tfm_suggest_env "${selected_product}" "${selected_module}")" -- $cur_word) )
     elif [ $COMP_CWORD -eq 4 ]; then
         selected_env="${COMP_WORDS[$COMP_CWORD-1]}"
         selected_module="${COMP_WORDS[$COMP_CWORD-2]}"
         selected_product="${COMP_WORDS[$COMP_CWORD-3]}"
-        COMPREPLY=( $(compgen -W "$(_tfm_suggest_config ${selected_product} ${selected_env} ${selected_module})" -- $cur_word) )
+        COMPREPLY=( $(compgen -W "$(_tfm_suggest_config "${selected_product}" "${selected_env}" "${selected_module}")" -- $cur_word) )
     elif [ $COMP_CWORD -eq 5 ]; then
         COMPREPLY=( $(compgen -W "$(_tfm_suggest_action)" -- $cur_word) )
     elif [ $COMP_CWORD -eq 6 ]; then

@@ -1,6 +1,10 @@
 # tf-manage
 
 ## Changelog
+### v6.3.0
+- [added] support for `/` in workspace names (to allow for more complex environment structures)
+- [changed] default Terraform version to 1.8.3
+
 ### v6.2.0
 - [added] support for new command: `validate`
 

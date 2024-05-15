@@ -147,6 +147,9 @@ __validate_tf_workspace() {
         workspace_override='true'
     fi
 
+    ## Sanitize workspace to make it URL safe in case path separator is used
+    workspace="${workspace//\//__}"
+
     ## Add emphasis to workspace name
     local workspace_emph="$(__add_emphasis_blue "${workspace}")"
     local workspace_emph_red="$(__add_emphasis_red "${workspace}")"
