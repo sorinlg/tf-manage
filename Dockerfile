@@ -3,7 +3,7 @@ FROM --platform=linux/amd64 oraclelinux:9-slim
 
 # Image configuration
 ARG AWS_CLI_VERSION='2.15.38'
-ARG TERRAFORM_VERSION='1.8.3'
+ARG TERRAFORM_VERSION='1.9.8'
 ARG USERNAME='tf'
 ARG USER_UID='1001'
 ARG USER_GID="${USER_UID}"
@@ -23,7 +23,7 @@ EOF
 RUN \
   # install the required packages
   microdnf -y update \
-  && microdnf -y install wget sudo unzip git bash-completion which curl vim procps jq kubectl \
+  && microdnf -y install wget sudo unzip git bash-completion which curl vim procps jq kubectl findutils \
   #
   # create non-root user
   && groupadd --gid $USER_GID $USERNAME \

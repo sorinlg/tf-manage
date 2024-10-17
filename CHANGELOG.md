@@ -1,6 +1,10 @@
 # tf-manage
 
 ## Changelog
+### v6.4.0
+- [added] added `findutils` to the docker image (for `find` command)
+- [changed] default Terraform version to 1.9.8
+
 ### v6.3.0
 - [added] support for `/` in workspace names (to allow for more complex environment structures)
 - [changed] default Terraform version to 1.8.3
