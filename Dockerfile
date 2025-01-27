@@ -1,5 +1,5 @@
 # always build for linux/amd64
-FROM --platform=linux/amd64 oraclelinux:9-slim
+FROM oraclelinux:9-slim
 
 # Image configuration
 ARG AWS_CLI_VERSION='2.15.38'
@@ -34,8 +34,10 @@ RUN \
   && chmod 0440 /etc/sudoers.d/$USERNAME \
   #
   # install the aws cli
-  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip" \
-  && unzip awscliv2.zip \
+  && ARCH=$(uname -m) \
+  && if [ "$ARCH" = "x86_64" ]; then ARCH="x86_64"; elif [ "$ARCH" = "aarch64" ]; then ARCH="aarch64"; else echo "Unsupported architecture"; exit 1; fi \
+  && curl "https://awscli.amazonaws.com/awscli-exe-linux-${ARCH}-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip" \
+  && unzip -qq awscliv2.zip \
   && sudo ./aws/install \
   #
   # clean cache
