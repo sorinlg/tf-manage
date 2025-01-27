@@ -1,5 +1,5 @@
 # always build for linux/amd64
-FROM --platform=linux/amd64 oraclelinux:9-slim
+FROM oraclelinux:9-slim
 
 # Image configuration
 ARG AWS_CLI_VERSION='2.15.38'
@@ -20,36 +20,38 @@ gpgcheck=1
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
 EOF
 
-RUN \
-  # install the required packages
-  microdnf -y update \
-  && microdnf -y install wget sudo unzip git bash-completion which curl vim procps jq kubectl findutils \
-  #
-  # create non-root user
-  && groupadd --gid $USER_GID $USERNAME \
-  && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-  #
-  # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
-  && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-  && chmod 0440 /etc/sudoers.d/$USERNAME \
-  #
-  # install the aws cli
-  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip" \
-  && unzip awscliv2.zip \
-  && sudo ./aws/install \
-  #
-  # clean cache
-  && microdnf clean all \
-  #
-  # install tfswitch
-  && curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash \
-  #
-  # git config
-  && git config --global --add safe.directory /app \
-  && git config --global --add safe.directory ${TFM_INSTALLER_DIR}
+RUN microdnf -y update
+RUN microdnf -y install wget sudo shadow-utils unzip git bash-completion which curl vim procps jq kubectl findutils
+#
+# create non-root user
+RUN groupadd --gid $USER_GID $USERNAME
+RUN useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+#
+# [Optional] Add sudo support. Omit if you don't need to install software after connecting.
+RUN echo $USERNAME ALL=\(ALL\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME
+RUN chmod 0440 /etc/sudoers.d/$USERNAME
 
 # switch to non-root user
+RUN mkdir -p /home/$USERNAME
+WORKDIR /home/$USERNAME
 USER $USERNAME
+#
+# install the aws cli
+RUN ARCH=$(uname -m) && echo "Debug:  ARCH is ${ARCH}" \
+  && if [ "$ARCH" = "x86_64" ]; then ARCH="x86_64"; elif [ "$ARCH" = "aarch64" ]; then ARCH="aarch64"; else echo "Unsupported architecture"; exit 1; fi \
+  && curl "https://awscli.amazonaws.com/awscli-exe-linux-${ARCH}-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip"
+RUN unzip -qq awscliv2.zip
+RUN sudo ./aws/install
+#
+# clean cache
+RUN sudo microdnf clean all
+#
+# install tfswitch
+RUN curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | sudo bash
+#
+# git config
+RUN git config --global --add safe.directory /app
+RUN git config --global --add safe.directory ${TFM_INSTALLER_DIR}
 
 # install tf-manage
 RUN mkdir -p /home/$USERNAME/bin
