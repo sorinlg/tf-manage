@@ -1,5 +1,5 @@
-# always build for linux/amd64
-FROM --platform=linux/amd64 oraclelinux:9-slim
+# Multi-architecture support
+FROM oraclelinux:9-slim
 
 # Image configuration
 ARG AWS_CLI_VERSION='2.15.38'
@@ -9,6 +9,7 @@ ARG USER_UID='1001'
 ARG USER_GID="${USER_UID}"
 ARG TFM_INSTALLER_DIR='/opt/tf-manage-installer'
 ARG TFM_INSTALL_PATH='/opt/terraform/tf-manage'
+ARG TARGETARCH
 
 # add kubectl yum repo
 COPY <<EOF  /etc/yum.repos.d/kubernetes.repo
@@ -34,9 +35,14 @@ RUN \
   && chmod 0440 /etc/sudoers.d/$USERNAME \
   #
   # install the aws cli
-  && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip" \
+  && ARCH=${TARGETARCH} \
+  && if [ "${ARCH}" = "amd64" ]; then AWS_ARCH="x86_64"; \
+     elif [ "${ARCH}" = "arm64" ]; then AWS_ARCH="aarch64"; \
+     else echo "Unsupported architecture: ${ARCH}" && exit 1; fi \
+  && curl "https://awscli.amazonaws.com/awscli-exe-linux-${AWS_ARCH}-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip" \
   && unzip awscliv2.zip \
-  && sudo ./aws/install \
+  && ./aws/install --install-dir /usr/local/aws-cli --bin-dir /usr/local/bin \
+  && rm -rf awscliv2.zip aws/ \
   #
   # install yq (YAML processor)
   && YQ_VERSION="v4.44.3" \
