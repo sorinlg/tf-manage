@@ -38,6 +38,14 @@ RUN \
   && unzip awscliv2.zip \
   && sudo ./aws/install \
   #
+  # install yq (YAML processor)
+  && YQ_VERSION="v4.44.3" \
+  && if [ "${ARCH}" = "amd64" ]; then YQ_ARCH="amd64"; \
+     elif [ "${ARCH}" = "arm64" ]; then YQ_ARCH="arm64"; \
+     else echo "Unsupported architecture: ${ARCH}" && exit 1; fi \
+  && curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_${YQ_ARCH}" -o /usr/local/bin/yq \
+  && chmod +x /usr/local/bin/yq \
+  #
   # clean cache
   && microdnf clean all \
   #
